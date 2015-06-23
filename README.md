@@ -15,7 +15,7 @@ Conic gradients are awesome, but browsers haven’t realized yet. This polyfill 
 
 /* after */
 
-.groovy {
+.hue-wheel {
 	background-image: url("data:image/svg+xml,...");
 	background-image: conic-gradient(red, yellow, lime, aqua, blue, magenta, red);
 }
