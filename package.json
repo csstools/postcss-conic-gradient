@@ -1,6 +1,6 @@
 {
 	"name": "postcss-conic-gradient",
-	"version": "0.1.0",
+	"version": "0.1.1",
 	"description": "A PostCSS plugin that allows you to use conic gradients in your CSS files",
 	"keywords": ["postcss", "css", "postcss-plugin", "conic", "gradients", "repeating", "background", "image"],
 	"author": "Lea Verou <lea＠verou.me> (http://lea.verou.me)",

@@ -2,7 +2,7 @@
 
 <img align="right" width="135" height="95" src="http://postcss.github.io/postcss/logo-leftp.png" title="Philosopher’s stone, logo of PostCSS">
 
-[PostCSS Conic Gradient] is a [PostCSS] plugin that allows you to use [conic gradients] in your CSS files. It is based on [Lea Verou’s excellent [conic-gradient polyfill].
+[PostCSS Conic Gradient] is a [PostCSS] plugin that allows you to use [conic gradients] in your CSS files. It is based on [Lea Verou]’s excellent [conic-gradient polyfill].
 
 Conic gradients are awesome, but browsers haven’t realized yet. This polyfill lets you experiment with them now. If you like them, [ask browser vendors to implement them]!
 
