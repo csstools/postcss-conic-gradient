@@ -105,7 +105,7 @@ module.exports = postcss.plugin('postcss-conic-gradient', function (opts) {
 
 	_.prototype = {
 		toString: function() {
-			return 'url("' + this.dataURL + '")';
+			return "url('" + this.dataURL + "')";
 		},
 
 		get dataURL() {
