@@ -44,7 +44,7 @@ postcss([ require('postcss-conic-gradient')() ])
 Install [Grunt PostCSS]:
 
 ```shell
-npm install postcss-conic-gradient --save-dev
+npm install grunt-postcss --save-dev
 ```
 
 Enable [PostCSS Conic Gradient] within your Gruntfile:
