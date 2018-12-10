@@ -1,24 +1,27 @@
 var postcss = require('postcss');
+var path = require('path');
+var colorTool = require('color');
 
+var CanvasKitInit = require('./canvaskit');
+
+// eslint-disable-next-line no-unused-vars
 module.exports = postcss.plugin('postcss-conic-gradient', function (opts) {
 	opts = opts || {};
 
-	var colorTool = require('color');
-	var Canvas = require('canvas');
 	var π = Math.PI;
 	var ε = 0.00001;
 	var deg = π / 180;
 
-	var innerWidth = 1080;
-	var innerHeight = 1080;
+	var innerWidth = 480;
+	var innerHeight = 480;
 
 	var _ = function(o) {
 		_.all.push(this);
 
 		o = o || {};
 
-		this.canvas = new Canvas(innerWidth, innerHeight);
-		this.context = this.canvas.getContext('2d');
+		this.surface = _.CanvasKit.MakeSurface(innerWidth, innerHeight);
+		this.canvas = this.surface.getCanvas();
 
 		this.repeating = !!o.repeating;
 
@@ -28,7 +31,8 @@ module.exports = postcss.plugin('postcss-conic-gradient', function (opts) {
 
 		var stops = o.stops;
 
-		this.stops = (stops || '').split(/\s*,(?![^(]*\))\s*/); // commas that are not followed by a ) without a ( first
+		// commas that are not followed by a ) without a ( first
+		this.stops = (stops || '').split(/\s*,(?![^(]*\))\s*/);
 
 		for (var i = 0; i < this.stops.length; i++) {
 			var forStop = this.stops[i] = new _.ColorStop(this, this.stops[i]);
@@ -42,7 +46,8 @@ module.exports = postcss.plugin('postcss-conic-gradient', function (opts) {
 
 		// Normalize stops
 
-		// Add dummy first stop or set first stop’s position to 0 if it doesn’t have one
+		// Add dummy first stop or set first stop’s position to 0
+		// if it doesn’t have one
 		if (this.stops[0].pos === undefined) {
 			this.stops[0].pos = 0;
 		}
@@ -53,7 +58,8 @@ module.exports = postcss.plugin('postcss-conic-gradient', function (opts) {
 			this.stops.unshift(first);
 		}
 
-		// Add dummy last stop or set first stop’s position to 100% if it doesn’t have one
+		// Add dummy last stop or set first stop’s position to 100%
+		// if it doesn’t have one
 		if (this.stops[this.stops.length - 1].pos === undefined) {
 			this.stops[this.stops.length - 1].pos = 1;
 		}
@@ -70,13 +76,17 @@ module.exports = postcss.plugin('postcss-conic-gradient', function (opts) {
 				// Evenly space color stops with no position
 				for (var j = i + 1; this[j]; j++) {
 					if (this[j].pos !== undefined) {
-						stop.pos = this[i - 1].pos + (this[j].pos - this[i - 1].pos) / (j - i + 1);
+						stop.pos =
+							this[i - 1].pos + 
+							(this[j].pos - this[i - 1].pos) / (j - i + 1);
+
 						break;
 					}
 				}
 			}
 			else if (i > 0) {
-				// Normalize color stops whose position is smaller than the position of the stop before them
+				// Normalize color stops whose position is smaller
+				// than the position of the stop before them
 				stop.pos = Math.max(stop.pos, this[i - 1].pos);
 			}
 		}, this.stops);
@@ -87,7 +97,11 @@ module.exports = postcss.plugin('postcss-conic-gradient', function (opts) {
 			var lastStop = repeatingStops[repeatingStops.length - 1];
 			var difference = lastStop.pos - repeatingStops[0].pos;
 
-			for (var i = 0; this.stops[this.stops.length - 1].pos < 1 && i < 10000; i++) {
+			for (
+				var i = 0;
+				this.stops[this.stops.length - 1].pos < 1 && i < 10000;
+				i++
+			) {
 				for (var j = 0; j < repeatingStops.length; j++) {
 					var s = repeatingStops[j].clone();
 
@@ -105,21 +119,27 @@ module.exports = postcss.plugin('postcss-conic-gradient', function (opts) {
 
 	_.prototype = {
 		toString: function() {
-			return "url('" + this.dataURL + "')";
-		},
+			var b64encoded = this.png.toString('base64');
 
-		get dataURL() {
-			return 'data:image/svg+xml,' + this.svg;
-		},
-
-		get svg() {
-			return '<svg xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink" preserveAspectRatio="none">' +
-			'<svg viewBox="0 0 100 100" preserveAspectRatio="xMidYMid slice">' +
-			'<image width="100" height="100%" xlink:href="' + this.png + '" /></svg></svg>';
+			return "url('data:image/png;base64," + b64encoded + "')";
 		},
 
 		get png() {
-			return this.canvas.toDataURL();
+			var img = this.surface.makeImageSnapshot();
+
+			if (!img) {
+				throw new Error('Failed to get image snapshot');
+			}
+
+			var png = img.encodeToData();
+
+			if (!png) {
+				throw new Error('Encoding failure');
+			}
+
+			var pngBytes = _.CanvasKit.getSkDataBytes(png);
+
+			return Buffer.from(pngBytes);
 		},
 
 		get r() {
@@ -129,7 +149,7 @@ module.exports = postcss.plugin('postcss-conic-gradient', function (opts) {
 		// Paint the conical gradient on the canvas
 		// Algorithm inspired from http://jsdo.it/akm2/yr9B
 		paint: function() {
-			var c = this.context;
+			var c = this.canvas;
 
 			var radius = this.r;
 			var x = this.size / 2;
@@ -139,9 +159,7 @@ module.exports = postcss.plugin('postcss-conic-gradient', function (opts) {
 
 			var diff, t, sameColor;
 
-			c.translate(this.size / 2, this.size / 2);
-			c.rotate(-90 * deg);
-			c.translate(-this.size / 2, -this.size / 2);
+			c.rotate(-90, this.size / 2, this.size / 2);
 
 			for (var i = 0; i < 360; i += 0.5) {
 				if (i / 360 + ε >= stop.pos) {
@@ -151,13 +169,17 @@ module.exports = postcss.plugin('postcss-conic-gradient', function (opts) {
 
 						stopIndex++;
 						stop = this.stops[stopIndex];
-					} while(stop && stop !== prevStop && stop.pos === prevStop.pos);
+					} while (
+						stop && stop !== prevStop && stop.pos === prevStop.pos
+					);
 
 					if (!stop) {
 						break;
 					}
 
-					sameColor = prevStop.color + '' === stop.color + '' && prevStop !== stop;
+					sameColor =
+						prevStop.color + '' === stop.color + '' &&
+						prevStop !== stop;
 
 					diff = prevStop.color.map(function(c, i){
 						return stop.color[i] - c;
@@ -166,18 +188,17 @@ module.exports = postcss.plugin('postcss-conic-gradient', function (opts) {
 
 				t = (i / 360 - prevStop.pos) / (stop.pos - prevStop.pos);
 
-				var interpolated = sameColor ? stop.color : diff.map(function (d, i){
-					var ret = d * t + prevStop.color[i];
+				var interpolated = sameColor ?
+					stop.color :
+					diff.map(function (d, i){
+						var ret = d * t + prevStop.color[i];
 
-					return i < 3 ? ret & 255 : ret;
-				});
+						return i < 3 ? ret & 255 : ret;
+					});
 
-				// Draw a series of arcs, 1deg each
-				c.fillStyle = 'rgba(' + interpolated.join(',') + ')';
+				var path = new _.CanvasKit.SkPath();
 
-				c.beginPath();
-
-				c.moveTo(x, x);
+				path.moveTo(x, x);
 
 				var angle = Math.min(360 * deg, i * deg);
 				var θ;
@@ -199,10 +220,22 @@ module.exports = postcss.plugin('postcss-conic-gradient', function (opts) {
 
 				var arc = endAngle - angle;
 
-				c.arc(x, x, radius, arc >= 2 * deg ? angle : angle - 0.02, endAngle);
+				path.arc(
+					x, x,
+					radius,
+					arc >= 2 * deg ? angle : angle - 0.02, endAngle
+				);
 
-				c.closePath();
-				c.fill();
+				var paint = new _.CanvasKit.SkPaint();
+				paint.setStyle(_.CanvasKit.PaintStyle.Fill);
+				paint.setColor(_.CanvasKit.Color(...interpolated, 1.0));
+
+				c.drawPath(path, paint);
+				
+				this.surface.flush();
+
+				path.delete();
+				paint.delete();
 			}
 		}
 	};
@@ -230,7 +263,10 @@ module.exports = postcss.plugin('postcss-conic-gradient', function (opts) {
 			}
 
 			if (parts[4]) {
-				this.next = new _.ColorStop(gradient, parts[1] + ' ' + parts[4] + parts[5]);
+				this.next = new _.ColorStop(
+					gradient,
+					parts[1] + ' ' + parts[4] + parts[5]
+				);
 			}
 		}
 	};
@@ -245,7 +281,8 @@ module.exports = postcss.plugin('postcss-conic-gradient', function (opts) {
 		},
 
 		toString: function() {
-			return 'rgba(' + this.color.join(', ') + ') ' + this.pos * 100 + '%';
+			var colors = this.color.join(', ');
+			return `rgba(${colors}) ${this.pos * 100}%`;
 		}
 	};
 
@@ -259,7 +296,19 @@ module.exports = postcss.plugin('postcss-conic-gradient', function (opts) {
 
 	var match = /(?:repeating-)?conic-gradient\(((?:\([^()]+\)|[^;()}])+?)\)/g;
 
-	return function (css) {
+	return async function (css) {
+		const CanvasKit = CanvasKitInit({
+			locateFile: (file) => path.resolve(__dirname, file),
+		});
+
+		try {
+			await loadNativeModule(CanvasKit);
+		} catch (e) {
+			throw new Error('Cannot load CanvasKit module! ' + e.message)
+		}
+
+		_.CanvasKit = CanvasKit;
+
 		css.eachDecl('background-image', function (decl) {
 			var changed;
 
@@ -267,12 +316,15 @@ module.exports = postcss.plugin('postcss-conic-gradient', function (opts) {
 				if (match.test(value)) {
 					changed = true;
 
-					return value.replace(/(?:repeating-)?conic-gradient\(((?:\([^()]+\)|[^;()}])+?)\)/g, function(gradient, stops) {
-						return new _({
-							stops: stops,
-							repeating: gradient.indexOf('repeating-') > -1
-						});
-					});
+					return value.replace(
+						match,
+						function(gradient, stops) {
+							return new _({
+								stops: stops,
+								repeating: gradient.indexOf('repeating-') > -1
+							});
+						}
+					);
 				}
 
 				return value;
@@ -287,3 +339,18 @@ module.exports = postcss.plugin('postcss-conic-gradient', function (opts) {
 		});
 	};
 });
+
+function loadNativeModule (module) {
+	return new Promise((resolve) => {
+		if (module.calledRun) {
+			resolve()
+		} else {
+			const _onRuntimeInitialized = module.onRuntimeInitialized;
+			
+			module.onRuntimeInitialized = () => {
+				if (_onRuntimeInitialized) _onRuntimeInitialized();
+				resolve()
+			}
+		}
+	})
+}

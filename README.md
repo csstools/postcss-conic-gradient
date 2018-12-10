@@ -16,18 +16,17 @@ Conic gradients are awesome, but browsers haven’t realized yet. This polyfill 
 /* after */
 
 .hue-wheel {
-	background-image: url("data:image/svg+xml,...");
+	background-image: url("data:image/png;base64,...");
 	background-image: conic-gradient(red, yellow, lime, aqua, blue, magenta, red);
 }
 ```
 
 ## Usage
 
-You just need to follow these three steps to use [PostCSS Conic Gradient]:
+You just need to follow these two steps to use [PostCSS Conic Gradient]:
 
-1. Install [Cairo].
-2. Add [PostCSS] to your build tool.
-3. Add [PostCSS Conic Gradient] as a PostCSS process.
+1. Add [PostCSS] to your build tool.
+2. Add [PostCSS Conic Gradient] as a PostCSS process.
 
 ```sh
 npm install postcss-conic-gradient --save-dev
