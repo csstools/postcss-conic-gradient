@@ -3,22 +3,25 @@
 		"no-mixed-spaces-and-tabs": [2, "smart-tabs"],
 		"no-unused-expressions": [0],
 		"no-underscore-dangle":  [0],
-		"no-reserved-keys":      [2],
 		"no-multi-spaces":       [0],
 		"no-extra-parens":       [2],
 		"no-unused-vars":        [2],
 		"no-loop-func":          [0],
-		"no-shadow": [0],
-		"no-redeclare": [0],
+		"no-shadow":		 [0],
+		"no-redeclare":		 [0],
 		"key-spacing":           [0],
-		"max-len":               [2],
+		"max-len":               [2, { "ignoreRegExpLiterals": true }],
 		"strict":                [0],
-		"indent": [2, "tab"],
+		"indent":		 [2, "tab"],
 		"quotes":                [2, "single", "avoid-escape"],
-		"curly":                 [0]
+		"curly":                 [0],
+		"new-cap":		 [0]
 	},
 	"env": {
 		"mocha": true,
 		"node":  true
+	},
+	"parserOptions": {
+		"ecmaVersion": 8
 	}
 }
