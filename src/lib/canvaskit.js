@@ -1,11 +1,10 @@
+/* eslint-disable */
 
-var CanvasKitInit = (function() {
-  var _scriptDir = typeof document !== 'undefined' && document.currentScript ? document.currentScript.src : undefined;
-  return (
-function(CanvasKitInit) {
-  CanvasKitInit = CanvasKitInit || {};
+export default function canvaskit(initCanvasKit) {
+	initCanvasKit = initCanvasKit || {};
 
-var e;e||(e=typeof CanvasKitInit !== 'undefined' ? CanvasKitInit : {});
+	var e;e||(e=typeof initCanvasKit !== 'undefined' ? initCanvasKit : {});
+
 (function(a){a.gd=a.gd||[];a.gd.push(function(){a.MakeCanvasSurface=function(b){var c=document.getElementById(b);if(!c)throw"Canvas with id "+b+" was not found";if(b=this._getRasterN32PremulSurface(c.width,c.height))b.yc=c,b.kd=c.width,b.hd=c.height,b.jd=b.kd*b.hd*4,b.Xc=a._malloc(b.jd);return b};a.MakeSurface=function(b,c){var d=this._getRasterN32PremulSurface(b,c);d&&(d.yc=null,d.kd=b,d.hd=c,d.jd=b*c*4,d.Xc=a._malloc(d.jd));return d};a.SkSurface.prototype.flush=function(){this._flush();if(this.yc)if(this._readPixels(this.kd,
 this.hd,this.Xc)){var b=new Uint8ClampedArray(a.buffer,this.Xc,this.jd);b=new ImageData(b,this.kd,this.hd);this.yc.getContext("2d").putImageData(b,0,0)}else console.wc("could not read pixels")};a.SkSurface.prototype.dispose=function(){this.Xc&&a._free(this.Xc);this.delete()};a.currentContext=function(){};a.setCurrentContext=function(){}})})(e);(function(a){function b(a){return Math.round(Math.max(0,Math.min(a||0,255)))}a.Color=function(a,d,f,g){return b(255*g)<<24|b(a)<<16|b(d)<<8|b(f)<<0}})(e);
 (function(a){function b(b,c){if(!b||!b.length)return d;var f=a._malloc(b.length*c.BYTES_PER_ELEMENT);c.set(b,f/c.BYTES_PER_ELEMENT);return f}function c(b,c){if(!b||!b.length)return d;for(var f=a._malloc(b.length*b[0].length*c.BYTES_PER_ELEMENT),g=0,m=f/c.BYTES_PER_ELEMENT,l=0;l<b.length;l++)for(var q=0;q<b[0].length;q++)c[m+g]=b[l][q],g++;return f}a.onRuntimeInitialized=function(){a.SkPath.prototype.addPath=function(){if(1===arguments.length)this._addPath(arguments[0],1,0,0,0,1,0,0,0,1);else if(2===
@@ -170,15 +169,5 @@ e.dynCall_viiiiij=function(){return e.asm.hc.apply(null,arguments)};e.dynCall_vi
 function vd(){function a(){if(!e.calledRun&&(e.calledRun=!0,!sa)){Wa||(Wa=!0,Qa(Sa));Qa(Ta);if(e.onRuntimeInitialized)e.onRuntimeInitialized();if(e.postRun)for("function"==typeof e.postRun&&(e.postRun=[e.postRun]);e.postRun.length;){var a=e.postRun.shift();Va.unshift(a)}Qa(Va)}}if(!(0<Za)){if(e.preRun)for("function"==typeof e.preRun&&(e.preRun=[e.preRun]);e.preRun.length;)Xa();Qa(Ra);0<Za||e.calledRun||(e.setStatus?(e.setStatus("Running..."),setTimeout(function(){setTimeout(function(){e.setStatus("")},
 1);a()},1)):a())}}e.run=vd;function r(a){if(e.onAbort)e.onAbort(a);void 0!==a?(la(a),t(a),a=JSON.stringify(a)):a="";sa=!0;throw"abort("+a+"). Build with -s ASSERTIONS=1 for more info.";}e.abort=r;if(e.preInit)for("function"==typeof e.preInit&&(e.preInit=[e.preInit]);0<e.preInit.length;)e.preInit.pop()();e.noExitRuntime=!0;vd();
 
-
-  return CanvasKitInit;
+	return initCanvasKit;
 }
-);
-})();
-if (typeof exports === 'object' && typeof module === 'object')
-    module.exports = CanvasKitInit;
-  else if (typeof define === 'function' && define['amd'])
-    define([], function() { return CanvasKitInit; });
-  else if (typeof exports === 'object')
-    exports["CanvasKitInit"] = CanvasKitInit;
-  

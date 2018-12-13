@@ -1,7 +1,13 @@
-## 0.1.1 (2015-06-23)
+# Changes to PostCSS Conic Gradient
+
+### 0.2.0 (December 12, 2018)
+
+- Complete rewritten version in progress
+
+### 0.1.1 (June 23, 2015)
 
 - Changed: Documentation
 
-## 0.1.0 (2015-06-23)
+### 0.1.0 (June 23, 2015)
 
 - Added: Initial release

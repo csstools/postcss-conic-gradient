@@ -1,19 +1,18 @@
-# PostCSS Conic Gradient [![Build Status][ci-img]][ci]
+# PostCSS Conic Gradient [<img src="https://postcss.github.io/postcss/logo.svg" alt="PostCSS" width="90" height="90" align="right">][postcss]
 
-<img align="right" width="135" height="95" src="http://postcss.github.io/postcss/logo-leftp.png" title="Philosopher’s stone, logo of PostCSS">
+[![NPM Version][npm-img]][npm-url]
+[![Build Status][cli-img]][cli-url]
+[![Support Chat][git-img]][git-url]
 
-[PostCSS Conic Gradient] is a [PostCSS] plugin that allows you to use [conic gradients] in your CSS files. It is based on [Lea Verou]’s excellent [conic-gradient polyfill].
+[PostCSS Conic Gradient] lets you use conic gradients in CSS. It is based on
+[Lea Verou]’s excellent [conic-gradient polyfill].
 
-Conic gradients are awesome, but browsers haven’t realized yet. This polyfill lets you experiment with them now. If you like them, [ask browser vendors to implement them]!
-
-```css
-/* before */
-
+```pcss
 .hue-wheel {
 	background-image: conic-gradient(red, yellow, lime, aqua, blue, magenta, red);
 }
 
-/* after */
+/* becomes */
 
 .hue-wheel {
 	background-image: url("data:image/png;base64,...");
@@ -23,55 +22,45 @@ Conic gradients are awesome, but browsers haven’t realized yet. This polyfill 
 
 ## Usage
 
-You just need to follow these two steps to use [PostCSS Conic Gradient]:
+Add [PostCSS Conic Gradient] to your project:
 
-1. Add [PostCSS] to your build tool.
-2. Add [PostCSS Conic Gradient] as a PostCSS process.
-
-```sh
+```bash
 npm install postcss-conic-gradient --save-dev
 ```
 
-### Node
+Use [PostCSS Conic Gradient] to process your CSS:
 
 ```js
-postcss([ require('postcss-conic-gradient')() ])
+const postcssConicGradient = require('postcss-conic-gradient');
+
+postcssConicGradient.process(YOUR_CSS /*, processOptions, pluginOptions */);
 ```
 
-### Grunt
-
-Install [Grunt PostCSS]:
-
-```shell
-npm install grunt-postcss --save-dev
-```
-
-Enable [PostCSS Conic Gradient] within your Gruntfile:
+Or use it as a [PostCSS] plugin:
 
 ```js
-grunt.loadNpmTasks('grunt-postcss');
+const postcss = require('postcss');
+const postcssConicGradient = require('postcss-conic-gradient');
 
-grunt.initConfig({
-	postcss: {
-		options: {
-			processors: [
-				require('postcss-conic-gradient')()
-			]
-		},
-		dist: {
-			src: 'css/*.css'
-		}
-	}
-});
+postcss([
+  postcssConicGradient(/* pluginOptions */)
+]).process(YOUR_CSS /*, processOptions */);
 ```
 
-[ask browser vendors to implement them]: http://leaverou.github.io/conic-gradient/#ask
-[ci]: https://travis-ci.org/jonathantneal/postcss-conic-gradient
-[ci-img]: https://travis-ci.org/jonathantneal/postcss-conic-gradient.svg
-[Cairo]: https://github.com/Automattic/node-canvas/wiki/_pages
+[PostCSS Conic Gradient] runs in all Node environments, with special instructions for:
+
+| [Node](INSTALL.md#node) | [PostCSS CLI](INSTALL.md#postcss-cli) | [Webpack](INSTALL.md#webpack) | [Create React App](INSTALL.md#create-react-app) | [Gulp](INSTALL.md#gulp) | [Grunt](INSTALL.md#grunt) |
+| --- | --- | --- | --- | --- | --- |
+
+[cli-img]: https://img.shields.io/travis/jonathantneal/postcss-conic-gradient.svg
+[cli-url]: https://travis-ci.org/jonathantneal/postcss-conic-gradient
+[git-img]: https://img.shields.io/badge/support-chat-blue.svg
+[git-url]: https://gitter.im/postcss/postcss
+[npm-img]: https://img.shields.io/npm/v/postcss-conic-gradient.svg
+[npm-url]: https://www.npmjs.com/package/postcss-conic-gradient
+
 [conic-gradient polyfill]: http://leaverou.github.io/conic-gradient/
 [conic gradients]: http://w3.org/TR/css4-images/#conic-gradients
-[Grunt PostCSS]: https://github.com/nDmitry/grunt-postcss
-[Lea Verou]: http://lea.verou.me/
 [PostCSS]: https://github.com/postcss/postcss
 [PostCSS Conic Gradient]: https://github.com/jonathantneal/postcss-conic-gradient
+[Lea Verou]: http://lea.verou.me/

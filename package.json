@@ -1,38 +1,59 @@
 {
-	"name": "postcss-conic-gradient",
-	"version": "0.1.1",
-	"description": "A PostCSS plugin that allows you to use conic gradients in your CSS files",
-	"keywords": [
-		"postcss",
-		"css",
-		"postcss-plugin",
-		"conic",
-		"gradients",
-		"repeating",
-		"background",
-		"image"
-	],
-	"author": "Lea Verou <lea＠verou.me> (http://lea.verou.me)",
-	"contributors": [
-		"Lea Verou <lea＠verou.me> (http://lea.verou.me)",
-		"Jonathan Neal <jonathantneal@hotmail.com> (http://jonneal.com)"
-	],
-	"license": "MIT",
-	"repository": {
-		"type": "git",
-		"url": "https://github.com/jonathantneal/postcss-conic-gradient.git"
-	},
-	"dependencies": {
-		"color": "^0.9.0",
-		"postcss": "^4.1.9"
-	},
-	"devDependencies": {
-		"chai": "^2.3.0",
-		"gulp": "^3.8.11",
-		"gulp-eslint": "^5.0.0",
-		"gulp-mocha": "^2.0.1"
-	},
-	"scripts": {
-		"test": "gulp"
-	}
+  "name": "postcss-conic-gradient",
+  "version": "0.2.0",
+  "description": "Use conic gradients in CSS",
+  "author": "Jonathan Neal <jonathantneal@hotmail.com>",
+  "license": "CC0-1.0",
+  "repository": "jonathantneal/postcss-conic-gradient",
+  "homepage": "https://github.com/jonathantneal/postcss-conic-gradient#readme",
+  "bugs": "https://github.com/jonathantneal/postcss-conic-gradient/issues",
+  "main": "index.js",
+  "module": "index.mjs",
+  "files": [
+    "index.js",
+    "index.js.map",
+    "index.mjs",
+    "index.mjs.map",
+    "conic",
+    "gradients",
+    "repeating",
+    "background",
+    "image"
+  ],
+  "scripts": {
+    "prepublish": "npm test",
+    "pretest": "rollup -c .rollup.js --silent",
+    "test": "npm run test:js && npm run test:tape",
+    "test:js": "eslint src/*.js --cache --ignore-path .gitignore --quiet",
+    "test:tape": "postcss-tape"
+  },
+  "engines": {
+    "node": ">=6.0.0"
+  },
+  "dependencies": {
+    "color": "^3.1.0",
+    "postcss": "^7.0.6"
+  },
+  "devDependencies": {
+    "@babel/core": "^7.1.6",
+    "@babel/plugin-syntax-dynamic-import": "^7.0.0",
+    "@babel/preset-env": "^7.1.6",
+    "babel-eslint": "^10.0.1",
+    "eslint": "^5.9.0",
+    "eslint-config-dev": "^2.0.0",
+    "postcss-tape": "^3.0.0-rc.2",
+    "pre-commit": "^1.2.2",
+    "rollup": "^0.67.3",
+    "rollup-plugin-babel": "^4.0.3"
+  },
+  "eslintConfig": {
+    "extends": "dev",
+    "parser": "babel-eslint"
+  },
+  "keywords": [
+    "postcss",
+    "css",
+    "postcss-plugin",
+    "none"
+  ]
 }
