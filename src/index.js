@@ -1,19 +1,13 @@
 import postcss from 'postcss';
-import path from 'path';
-import loadNativeModule from './lib/load-native-module';
-import canvaskit from './lib/canvaskit';
+import canvaskit from 'canvaskit-wasm';
 import _ from './lib/_';
 
 export default postcss.plugin('postcss-conic-gradient', () => {
 	return async function (css) {
-		const canvasKit = canvaskit({
-			locateFile(file) {
-				return path.resolve(__dirname, 'src', 'lib', file);
-			}
-		});
+		const canvasKit = canvaskit();
 
 		try {
-			await loadNativeModule(canvasKit);
+			await canvasKit.ready();
 		} catch (error) {
 			throw new Error(`Cannot load CanvasKit module! ${error.message}`);
 		}
